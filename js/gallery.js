@@ -35,6 +35,9 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
             // (integer) default number of videos to load per call
             limit = 12,
 
+            // (integer) number of columns for the videoblock
+            columns = 1;
+
             // (integer) default number of videos to load per call
             width = '100%',
 
@@ -72,7 +75,12 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
                 if (parameters.hasOwnProperty('width'))
                 {
                     width = parameters.width;
-                    console.log(width);
+                }
+
+                // nb of columns for the video block
+                if (parameters.hasOwnProperty('columns'))
+                {
+                    columns = parameters.columns;
                 }
 
                 if (parameters.hasOwnProperty('categories'))
@@ -513,24 +521,29 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
          */
         function setVideoBlock(response)
         {
-            jQuery(containerId).css('width', width)
+            jQuery(containerId).html('<div id="publisher_videoblock"></div>');
+
+            $videoblock = jQuery(containerId).find('#publisher_videoblock');
+
+            $videoblock.css('width', width);
             
             var code = '',
+                singleWidth = Math.floor(width / columns),
                 truncateLength = 100,
                 thumbnailSize = 'thumbnail_large_url',
                 height = Math.round(width / 1.875);
 
             // if a custom width has been defined
-            if (width)
+            if (singleWidth)
             {
                 // if the width is above 320px we crop the original thumbnail
-                if (width > 320)
+                if (singleWidth > 320)
                 {
                     thumbnailSize = 'thumbnail_url';
                 }
 
                 // if the witdth is between 160 & 320px we use the large thumbnail
-                else if (width <= 320 && width > 160)
+                else if (singleWidth <= 320 && singleWidth > 160)
                 {
                     thumbnailSize = 'thumbnail_large_url';
                 }
@@ -538,14 +551,14 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
                 // otherwise we use the medium thumbnail and we prefer a more squared image format
                 else
                 {
-                    truncateLength = getTruncateLength(width);
+                    truncateLength = getTruncateLength(singleWidth);
                     thumbnailSize = 'thumbnail_medium_url';
-                    height = Math.round(width / 1.33);
+                    height = Math.round(singleWidth / 1.33);
                 }
             }
 
             jQuery(response.list).each(function(index, video){
-                code    +=  '<div class="publisher_videoblock_video '+ video['id'] +'" style="height: '+ height +'px;" title="'+ video['title'] +'">'
+                code    +=  '<div class="dm_publisher_video '+ video['id'] +'" style="height: '+ height +'px;" title="'+ video['title'] +'">'
                         +   '   <div>'
                         +   '       <div class="dm_publisher_thumb" style="background:url('+ video[thumbnailSize] +') no-repeat center center; height: '+ height +'px;"></div>'
                         +   '   </div>'
@@ -556,11 +569,28 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
                         +   '</div>';
             });
 
-            jQuery(containerId).append(code);
+            $videoblock.html(code);
 
             jQuery.fancybox.hideLoading();
 
-            jQuery('.publisher_videoblock_video').click(function(){
+            $videoblock.find('.dm_publisher_video').css('width', singleWidth);
+
+            // adjust the position of the play button on the thumbnail
+            $videoblock.find('.dm_publisher_play').css({'top': Math.round((height - 40)/2), 'left': Math.round((singleWidth - 45)/2)});
+
+            // adjust the title layer size
+            $videoblock.find('.dm_publisher_title').css({'width': singleWidth+'px', 'height': height +'px', 'left': 0});
+
+            // on mouse over we show the video title, when the mouse leave we hide it and display the play button
+            jQuery('.dm_publisher_video').mouseover(function(){
+                jQuery(this).find('.dm_publisher_play').hide();
+                jQuery(this).find('.dm_publisher_title').show();
+            }).mouseout(function(){
+                jQuery(this).find('.dm_publisher_play').show();
+                jQuery(this).find('.dm_publisher_title').hide();
+            });
+
+            jQuery('.dm_publisher_video').click(function(){
                 divClass = jQuery(this).attr('class').split(' ');
 
                 if (divClass.length >= 2)

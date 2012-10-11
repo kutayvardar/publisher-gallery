@@ -87,7 +87,6 @@
 
 /*=gallery - load more
 *************************************/
-
 #publisher_load_more 
 {
     width:220px;
@@ -127,4 +126,43 @@
 {
     position:relative;
     top:1px;
+}
+
+/*=videoblock
+*************************************/
+#publisher_videoblock
+{
+    margin: 0;
+    padding:0;
+}
+
+#publisher_videoblock .dm_publisher_video
+{
+    position:relative;
+    float:left;
+    cursor:pointer;
+}
+
+#publisher_videoblock .dm_publisher_video .dm_publisher_thumb
+{
+    position:relative;
+    width:100%;
+    cursor:pointer;
+}
+
+#publisher_videoblock .dm_publisher_video .dm_publisher_title
+{
+    position:absolute;
+    display:none;
+    top:0;
+    color: #D6D6D6;
+    background:url('../images/bg_title.png');
+}
+
+#publisher_videoblock .dm_publisher_video .dm_publisher_play
+{
+    position:absolute;
+    background: url('../images/csl_play_tn.png') no-repeat;
+    width: 45px;
+    height:40px;
 }
