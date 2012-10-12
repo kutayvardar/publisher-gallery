@@ -62,7 +62,7 @@
     height:40px;
     top:125px;
     color:white;
-    background-image:url('../images/bg_title_gallery.png');
+    background-image:url('images//bg_title_gallery.png');
     z-index:1;
     display:block;
     left:5px;
@@ -76,7 +76,7 @@
 #publisher_gallery_video_list .publisher_gallery_play_button
 {
     position:absolute;
-    background: url('../images/csl_play_tn.png') no-repeat;
+    background: url('images//csl_play_tn.png') no-repeat;
     width: 45px;
     height:40px;
     z-index:9;
@@ -89,7 +89,6 @@
 #publisher_load_more 
 {
     width:220px;
-    height:25px;
     margin: 0 auto;
     margin-top:20px;
     text-align:center;
@@ -122,43 +121,4 @@
 {
     position:relative;
     top:1px;
-}
-
-/*=videoblock
-*************************************/
-#publisher_videoblock
-{
-    margin: 0;
-    padding:0;
-}
-
-#publisher_videoblock .dm_publisher_video
-{
-    position:relative;
-    float:left;
-    cursor:pointer;
-}
-
-#publisher_videoblock .dm_publisher_video .dm_publisher_thumb
-{
-    position:relative;
-    width:100%;
-    cursor:pointer;
-}
-
-#publisher_videoblock .dm_publisher_video .dm_publisher_title
-{
-    position:absolute;
-    display:none;
-    top:0;
-    color: #D6D6D6;
-    background:url('../images/bg_title.png');
-}
-
-#publisher_videoblock .dm_publisher_video .dm_publisher_play
-{
-    position:absolute;
-    background: url('../images/csl_play_tn.png') no-repeat;
-    width: 45px;
-    height:40px;
 }
