@@ -15,7 +15,7 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
             href,
 
             // (object) player parameters
-            playerParameters = { 'autoplay': 1 },
+            playerParameters = { 'autoplay': 1, 'syndication': '' },
 
             // (array) Auhtorized player parameters
             authorizedPlayerParameters = ['related', 'logo', 'syndication'],
@@ -155,31 +155,31 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
         function setCategories(cat)
         {
             var count = cat.length,
-                callback;
-
+                hasTitle = 0,
+                retrievingTitle = 0;
+                
             jQuery(cat).each(function(index, value){
-
-                // end of the loop, we generate the gallery menu
-                if (index == count -1)
-                {
-                    callback = setGalleryMenu;
-                }
-
                 // a specific title has been defined for this list
                 if (jQuery.isPlainObject(value) && value.hasOwnProperty('list') && value.hasOwnProperty('title'))
                 {
-                    categories.push(value);
+                    hasTitle++;
                 }
 
-                // no title has been defined, we need to retrieve it from DM
-                else
+                // no title has been defined, we need to retrieve it from DM (+ we only retrieve one title at a time)
+                else if (retrievingTitle == 0)
                 {
-                    categories.push({ list: value, title: ''  });
-
-                    // while the loop goes on we retrieve the category name
-                    getCategoryName(value, callback);
+                    retrievingTitle = 1;
+                    getCategoryName(value, cat);
                 }
             });
+            
+            // we have retrieved all the titles
+            if (hasTitle == count)
+            {
+                // we store them in a clean function wide variable
+                categories = cat;
+                setGalleryMenu();
+            }
         }
 
         /**
@@ -187,10 +187,10 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
          *
          * @param string list
          */
-        function getCategoryName(list, callback)
-        {
+        function getCategoryName(list, cat)
+        {            
             var field = 'name',
-                categoryIndex;
+                categoryIndex = jQuery.inArray(list, cat);
 
             if (list.match('/user'))
             {
@@ -198,19 +198,8 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
             }
 
             DM.api(list, { fields: field }, function(response){
-
-                jQuery(categories).each(function(index, value){
-                    if (value.list == list)
-                    {
-                        categories[index]['title'] = response[field];
-                    }
-                });  
-
-                if (callback)
-                {
-                    callback();
-                }
-
+                cat[categoryIndex] = { list: list, title: response[field] };                
+                setCategories(cat);
             });
         }
 
@@ -232,10 +221,10 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
 
             jQuery('#publisher_gallery_menu').html(menu);
 
-            jQuery('#publisher_gallery_menu a').click(function(){
-                setCurrentCategory(jQuery(this).attr('href'));
-
-                return false;
+            jQuery('#publisher_gallery_menu').find('a').click(function(e){
+                e.preventDefault();
+                var href = jQuery(this).attr('href').replace('http://'+ window.location.hostname, ''); // bug fix for IE 7 (by default adds the host name to relative URLs)
+                setCurrentCategory(href);
             });
 
             // if no specific category has been passed via the hash, we load the first list
@@ -305,7 +294,6 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
             if (currentCategory.match('mychannel'))
             {
                 res = pattern.exec(currentCategory);
-                console.log(res);
                 if (res[1])
                 {
                     method = '/user/'+ res[1] +'/subscriptions';
@@ -327,11 +315,11 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
          * @param object parameters
          */
         function setGallery(response)
-        {
+        {            
             if (currentPage == 1)
             {
                 jQuery(containerId).append('<div id="publisher_gallery_video_list"></div>');
-                jQuery(containerId).append('<div class="publisher_clear"></div><div id="publisher_load_more">'+ loadMoreText +'</div>');
+                jQuery(containerId).append('<div class="publisher_clear"></div><center><div id="publisher_load_more">'+ loadMoreText +'</div></center>'); // add the center tag tofix a display bug in IE
 
                 jQuery(containerId).find('#publisher_load_more').click(function(){
                     getNextPage();
@@ -344,6 +332,7 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
                 }  
 
                 $gallery = jQuery(containerId).find('#publisher_gallery_video_list');
+               
                 setGallerySize($gallery);
 
                 jQuery(window).on('resize', function(){
@@ -363,7 +352,7 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
                           +   '     <div class="publisher_gallery_thumb " style="background:url('+ video['thumbnail_large_url'] +') no-repeat center top;"></div>'
                           +   '     <div class="publisher_gallery_title_container">'
                           +   '         <div class="publisher_gallery_title">'
-                          +                 video['title'].truncate(35, true)
+                          +                 video['title'].truncate(30, true)
                           +   '         </div>'
                           +   '     </div>'
                           +   '     <div class="publisher_gallery_play_button"></div>'
@@ -396,7 +385,7 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
             
             // how many pixel are the videos really using
             realWidth = 320 * nbVideos;
-
+            
             // what margin should we apply to align the gallery in the center
             margin = ($gallery.width() - realWidth) / 2;
 
@@ -426,6 +415,12 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
                         padding:0,
                         autoSize : false
                     });
+
+                    _gaq.push(
+                        ['DM_PublisherGallery._trackEvent', 'Views', 'Syndication Key', ''+playerParameters.syndication+''],
+                        ['DM_PublisherGallery._trackEvent', 'Views', 'Video Id', videoId],
+                        ['DM_PublisherGallery._trackEvent', 'Views', 'Domain', window.location.href]
+                    );
                 }
             });
         }
@@ -446,6 +441,12 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
                 padding:0,
                 autoSize : false
             });
+
+            _gaq.push(
+                ['DM_PublisherGallery._trackEvent', 'Views', 'Syndication Key', ''+playerParameters.syndication+''],
+                ['DM_PublisherGallery._trackEvent', 'Views', 'Video Id', xid],
+                ['DM_PublisherGallery._trackEvent', 'Views', 'Domain', window.location.href]
+            );
         }
 
         /**
@@ -531,7 +532,7 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.jQuery)
                 singleWidth = Math.floor(width / columns),
                 truncateLength = 100,
                 thumbnailSize = 'thumbnail_large_url',
-                height = Math.round(width / 1.875);
+                height = Math.round(singleWidth / 1.875);
 
             // if a custom width has been defined
             if (singleWidth)

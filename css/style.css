@@ -63,7 +63,6 @@
     top:125px;
     color:white;
     background-image:url('../images/bg_title_gallery.png');
-    font-size:11pt;
     z-index:1;
     display:block;
     left:5px;
@@ -71,7 +70,7 @@
 
 #publisher_gallery_video_list .publisher_gallery_title
 {
-    padding: 10px;
+    padding: 10px 10px 0px 10px;
 }
 
 #publisher_gallery_video_list .publisher_gallery_play_button
@@ -90,16 +89,13 @@
 #publisher_load_more 
 {
     width:220px;
+    height:25px;
     margin: 0 auto;
     margin-top:20px;
     text-align:center;
     cursor:pointer;
-    font-family: 'Questrial', sans-serif;
     color:#777777;
-    height:25px;
-    font-size:15px;
-    padding:6px 24px;
-    padding-top:15px;
+    padding:10px 10px;
     text-decoration:none;
     -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
     -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
