@@ -1,5 +1,5 @@
 /*! fancyBox v2.1.0 fancyapps.com | fancyapps.com/fancybox/#license */
-if(typeof DM_jQuery.fancybox == 'undefined')
+if(DM_jQuery && typeof DM_jQuery.fancybox == 'undefined')
 {
 (function(u,p,f,q){var o=f(u),n=f(p),b=f.fancybox=function(){b.open.apply(this,arguments)},z=null,m=p.createTouch!==q,x=function(a){return a&&a.hasOwnProperty&&a instanceof f},s=function(a){return a&&"string"===f.type(a)},C=function(a){return s(a)&&0<a.indexOf("%")},k=function(a,c){var e=parseInt(a,10);c&&C(a)&&(e*=b.getViewport()[c]/100);return Math.ceil(e)},v=function(a,b){return k(a,b)+"px"};f.extend(b,{version:"2.1.0",defaults:{padding:15,margin:20,width:800,height:600,minWidth:100,minHeight:100,
 maxWidth:9999,maxHeight:9999,autoSize:!0,autoHeight:!1,autoWidth:!1,autoResize:!m,autoCenter:!m,fitToView:!0,aspectRatio:!1,topRatio:0.5,leftRatio:0.5,scrolling:"auto",wrapCSS:"",arrows:!0,closeBtn:!0,closeClick:!1,nextClick:!1,mouseWheel:!0,autoPlay:!1,playSpeed:3E3,preload:3,modal:!1,loop:!0,ajax:{dataType:"html",headers:{"X-fancyBox":!0}},iframe:{scrolling:"auto",preload:!0},swf:{wmode:"transparent",allowfullscreen:"true",allowscriptaccess:"always"},keys:{next:{13:"left",34:"up",39:"left",40:"up"},
