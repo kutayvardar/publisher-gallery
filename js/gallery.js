@@ -1,6 +1,6 @@
-if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
+if (!window.DM_PublisherGallery && window.DM_jQuery)
 {
-    DM_PublisherGallery = (function(){
+    DM_PublisherGallery = (function($){
         var
             // (string) container
             containerId,
@@ -42,12 +42,14 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
             width = '100%',
 
             // (boolean) should we load the google analytics tracker
-            gaLoad = true;
+            gaLoad = true,
+
+            cssUrl = 'http://publisher.dailymotion.com/widgets/style-gallery.css';
 
         function init(parameters)
         {
             // load the css in the page
-            includeCss('http://localhost/gallery/src/style.css?'+Math.random());
+            includeCss(cssUrl);
 
             // retrieve the hash parameters #category=xxxx&vid=xxxx
             getHashParameters();
@@ -119,7 +121,7 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
             hash = window.location.hash.replace('#', '');
             hash = hash.split('&');
 
-            DM_jQuery(hash).each(function(index, value){
+            $(hash).each(function(index, value){
                 if(value.match('category='))
                 {
                     currentCategory = value.replace('category=', '');
@@ -139,7 +141,7 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
          */
         function setPlayerParameters(parameters)
         {
-            DM_jQuery(authorizedPlayerParameters).each(function(index, param){
+            $(authorizedPlayerParameters).each(function(index, param){
                 if (parameters.hasOwnProperty(param))
                 {
                     playerParameters[param] = parameters[param];
@@ -158,9 +160,9 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
                 hasTitle = 0,
                 retrievingTitle = 0;
                 
-            DM_jQuery(cat).each(function(index, value){
+            $(cat).each(function(index, value){
                 // a specific title has been defined for this list
-                if (DM_jQuery.isPlainObject(value) && value.hasOwnProperty('list') && value.hasOwnProperty('title'))
+                if ($.isPlainObject(value) && value.hasOwnProperty('list') && value.hasOwnProperty('title'))
                 {
                     hasTitle++;
                 }
@@ -190,7 +192,7 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
         function getCategoryName(list, cat)
         {            
             var field = 'name',
-                categoryIndex = DM_jQuery.inArray(list, cat);
+                categoryIndex = $.inArray(list, cat);
 
             if (list.match('/user'))
             {
@@ -211,19 +213,19 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
         {   
             var menu = '<ul>';
 
-            DM_jQuery(containerId).html('<div id="publisher_gallery_menu"></div><div style="clear:both;"></div>');
+            $(containerId).html('<div id="publisher_gallery_menu"></div><div style="clear:both;"></div>');
 
-            DM_jQuery(categories).each(function(index, category){
+            $(categories).each(function(index, category){
                 menu += '<li><a href="'+ category.list +'">'+ category.title +'</a></li>';
             });
 
             menu += '</ul>';
 
-            DM_jQuery('#publisher_gallery_menu').html(menu);
+            $('#publisher_gallery_menu').html(menu);
 
-            DM_jQuery('#publisher_gallery_menu').find('a').click(function(e){
+            $('#publisher_gallery_menu').find('a').click(function(e){
                 e.preventDefault();
-                var href = DM_jQuery(this).attr('href').replace('http://'+ window.location.hostname, ''); // bug fix for IE 7 (by default adds the host name to relative URLs)
+                var href = $(this).attr('href').replace('http://'+ window.location.hostname, ''); // bug fix for IE 7 (by default adds the host name to relative URLs)
                 setCurrentCategory(href);
             });
 
@@ -247,9 +249,9 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
         function setCurrentCategory(categoryList)
         {
             // show some activity
-            DM_jQuery.fancybox.showLoading();
+            $.fancybox.showLoading();
 
-            $categoryMenu = DM_jQuery(containerId).find('#publisher_gallery_menu li');
+            $categoryMenu = $(containerId).find('#publisher_gallery_menu li');
             
             // remove the visual indicator of the selected section
             $categoryMenu.removeClass('selected');
@@ -257,16 +259,16 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
             // init the current page
             currentPage = 1;
 
-            if (DM_jQuery(containerId).find('#publisher_gallery_video_list'))
+            if ($(containerId).find('#publisher_gallery_video_list'))
             {
-                DM_jQuery(containerId).find('#publisher_gallery_video_list').remove();
-                DM_jQuery(containerId).find('#publisher_load_more').remove();
-                DM_jQuery(containerId).find('.publisher_clear').remove();
+                $(containerId).find('#publisher_gallery_video_list').remove();
+                $(containerId).find('#publisher_load_more').remove();
+                $(containerId).find('.publisher_clear').remove();
             }
 
             if (categoryList)
             {
-                DM_jQuery(categories).each(function(index, value){
+                $(categories).each(function(index, value){
                     if (value.list == categoryList)
                     {
                         currentCategory = categoryList;
@@ -318,10 +320,10 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
         {            
             if (currentPage == 1)
             {
-                DM_jQuery(containerId).append('<div id="publisher_gallery_video_list"></div>');
-                DM_jQuery(containerId).append('<div class="publisher_clear"></div><center><div id="publisher_load_more">'+ loadMoreText +'</div></center>'); // add the center tag tofix a display bug in IE
+                $(containerId).append('<div id="publisher_gallery_video_list"></div>');
+                $(containerId).append('<div class="publisher_clear"></div><center><div id="publisher_load_more">'+ loadMoreText +'</div></center>'); // add the center tag tofix a display bug in IE
 
-                DM_jQuery(containerId).find('#publisher_load_more').click(function(){
+                $(containerId).find('#publisher_load_more').click(function(){
                     getNextPage();
                 });
 
@@ -331,23 +333,23 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
                     selectedVideo = undefined;
                 }  
 
-                $gallery = DM_jQuery(containerId).find('#publisher_gallery_video_list');
+                $gallery = $(containerId).find('#publisher_gallery_video_list');
                
                 setGallerySize($gallery);
 
-                DM_jQuery(window).on('resize', function(){
+                $(window).on('resize', function(){
                     setGallerySize($gallery)
                 });
             }
 
             if (!$gallery)
             {
-                $gallery = DM_jQuery(containerId).find('#publisher_gallery_video_list');
+                $gallery = $(containerId).find('#publisher_gallery_video_list');
             }
             
             var videoList = '';
 
-            DM_jQuery(response.list).each(function(i, video){
+            $(response.list).each(function(i, video){
                 videoList += '<div class="publisher_gallery_video '+ video['id'] +'">'
                           +   '     <div class="publisher_gallery_thumb " style="background:url('+ video['thumbnail_large_url'] +') no-repeat center top;"></div>'
                           +   '     <div class="publisher_gallery_title_container">'
@@ -363,7 +365,7 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
             $gallery.append(videoList);
 
             // hide the loading wheel
-            DM_jQuery.fancybox.hideLoading();
+            $.fancybox.hideLoading();
 
             // bind click to the lightbox
             setLightbox();
@@ -371,7 +373,7 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
             // hide the load more button if there are no other videos
             if (!response.has_more)
             {
-                DM_jQuery(containerId).find('#publisher_load_more').hide();
+                $(containerId).find('#publisher_load_more').hide();
             }
         }
 
@@ -399,16 +401,16 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
          */
         function setLightbox()
         {
-            DM_jQuery('.publisher_gallery_video').click(function(){
-                divClass = DM_jQuery(this).attr('class').split(' ');
+            $('.publisher_gallery_video').click(function(){
+                divClass = $(this).attr('class').split(' ');
 
                 if (divClass.length >= 2)
                 {
                     videoId = divClass[1];
 
-                    DM_jQuery.fancybox.open({ 
+                    $.fancybox.open({ 
                         type: 'iframe', 
-                        href: 'http://www.dailymotion.com/embed/video/'+ videoId +'?'+ DM_jQuery.param(playerParameters),
+                        href: 'http://www.dailymotion.com/embed/video/'+ videoId +'?'+ $.param(playerParameters),
                         width: 560, 
                         height: 315, 
                         scrolling: 'no', 
@@ -432,9 +434,9 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
          */
         function playVideo(xid)
         {
-            DM_jQuery.fancybox.open({ 
+            $.fancybox.open({ 
                 type: 'iframe', 
-                href: 'http://www.dailymotion.com/embed/video/'+ xid +'?'+ DM_jQuery.param(playerParameters),
+                href: 'http://www.dailymotion.com/embed/video/'+ xid +'?'+ $.param(playerParameters),
                 width: 560, 
                 height: 315, 
                 scrolling: 'no', 
@@ -456,7 +458,7 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
         function getNextPage()
         {
             // we show some activity
-            DM_jQuery.fancybox.showLoading();
+            $.fancybox.showLoading();
 
             currentPage++;
 
@@ -522,9 +524,9 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
          */
         function setVideoBlock(response)
         {
-            DM_jQuery(containerId).html('<div id="publisher_videoblock"></div>');
+            $(containerId).html('<div id="publisher_videoblock"></div>');
 
-            $videoblock = DM_jQuery(containerId).find('#publisher_videoblock');
+            $videoblock = $(containerId).find('#publisher_videoblock');
 
             $videoblock.css('width', width);
             
@@ -558,7 +560,7 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
                 }
             }
 
-            DM_jQuery(response.list).each(function(index, video){
+            $(response.list).each(function(index, video){
                 code    +=  '<div class="dm_publisher_video '+ video['id'] +'" style="height: '+ height +'px;" title="'+ video['title'] +'">'
                         +   '   <div>'
                         +   '       <div class="dm_publisher_thumb" style="background:url('+ video[thumbnailSize] +') no-repeat center center; height: '+ height +'px;"></div>'
@@ -572,7 +574,7 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
 
             $videoblock.html(code);
 
-            DM_jQuery.fancybox.hideLoading();
+            $.fancybox.hideLoading();
 
             $videoblock.find('.dm_publisher_video').css('width', singleWidth);
 
@@ -583,16 +585,16 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
             $videoblock.find('.dm_publisher_title').css({'width': singleWidth+'px', 'height': height +'px', 'left': 0});
 
             // on mouse over we show the video title, when the mouse leave we hide it and display the play button
-            DM_jQuery('.dm_publisher_video').mouseover(function(){
-                DM_jQuery(this).find('.dm_publisher_play').hide();
-                DM_jQuery(this).find('.dm_publisher_title').show();
+            $('.dm_publisher_video').mouseover(function(){
+                $(this).find('.dm_publisher_play').hide();
+                $(this).find('.dm_publisher_title').show();
             }).mouseout(function(){
-                DM_jQuery(this).find('.dm_publisher_play').show();
-                DM_jQuery(this).find('.dm_publisher_title').hide();
+                $(this).find('.dm_publisher_play').show();
+                $(this).find('.dm_publisher_title').hide();
             });
 
-            DM_jQuery('.dm_publisher_video').click(function(){
-                divClass = DM_jQuery(this).attr('class').split(' ');
+            $('.dm_publisher_video').click(function(){
+                divClass = $(this).attr('class').split(' ');
 
                 if (divClass.length >= 2)
                 {
@@ -633,10 +635,22 @@ if (!window.DM_PublisherGallery && !window.DM_ApiV1Hook && window.DM_jQuery)
             return  toLong ? s_ +'...' : s_;
         };
 
+        /** 
+         * Set Css Url - used to load a custom CSS file
+         *
+         * @param string url
+         */
+
+        function setCssUrl(url) 
+        {
+            cssUrl = url;
+        }
+
         return {
-            init: init
+            init: init,
+            setCssUrl: setCssUrl 
         };
-    })();
+    })(DM_jQuery);
 
     window.dmAsyncInit = function()
     {
