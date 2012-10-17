@@ -7,16 +7,16 @@ Gallery
 ------------
     
     <script>
-        // we define here all the categories we would like to display in our video gallery
-        var categoryList = [
-            { list: '/mychannel/videogames-en', title: 'All the videos' }, // Customize your menu titles by passing objects with two parameters: list and title.
-            '/user/Activision', // This menu title won't be customized (will retrieve the default value on Dailymotion)
-            '/user/ElectronicArts', 
-            '/user/ign'
-        ];
-
         window.dmPublisherAsyncInitGallery = function()
         {
+             // we define here all the categories we would like to display in our video gallery
+            var categoryList = [
+                { list: '/mychannel/videogames-en', title: 'All the videos' }, // Customize your menu titles by passing objects with two parameters: list and title.
+                '/user/Activision', // This menu title won't be customized (will retrieve the default value on Dailymotion)
+                '/user/ElectronicArts', 
+                '/user/ign'
+            ];
+            
             // init the gallery
             DM_PublisherGallery.init({
                 containerId: 'YOUR_CONTAINER_ID', // (required) the id of your container
