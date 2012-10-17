@@ -44,7 +44,7 @@ if (!window.DM_PublisherGallery && window.DM_jQuery)
             // (boolean) should we load the google analytics tracker
             gaLoad = true,
 
-            cssUrl = 'http://publisher.dailymotion.com/widgets/style-gallery.css';
+            cssUrl = 'http://publisher.dailymotion.com/widgets/gallery/style.css';
 
         function init(parameters)
         {
