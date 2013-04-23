@@ -28,7 +28,7 @@ Gallery
         };
         (function() {
             var e = document.createElement('script'); e.async = true;
-            e.src = 'http://publisher.dailymotion.com/widgets/gallery/gallery.js';
+            e.src = 'http://static2.dmcdn.net/publisher/gallery/gallery.js';
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
         }());
     </script>
@@ -51,7 +51,7 @@ Video block
         };
         (function() {
             var e = document.createElement('script'); e.async = true;
-            e.src = 'http://publisher.dailymotion.com/widgets/gallery/gallery.js';
+            e.src = 'http://static2.dmcdn.net/publisher/gallery/gallery.js';
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
         }());
     </script>
