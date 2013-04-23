@@ -26,13 +26,13 @@
     display:none;
     top:0;
     color: #D6D6D6;
-    background:url('images/bg_title.png');
+    background:url('images/bg_title.png?v=1');
 }
 
 #publisher_videoblock .dm_publisher_video .dm_publisher_play
 {
     position:absolute;
-    background: url('images/csl_play_tn.png') no-repeat;
+    background: url('images/csl_play_tn.png?v=1') no-repeat;
     width: 45px;
     height:40px;
 }

@@ -44,7 +44,7 @@ if (!window.DM_PublisherGallery && window.DM_jQuery)
             // (boolean) should we load the google analytics tracker
             gaLoad = true,
 
-            cssUrl = 'http://static2.dmcdn.net/publisher/gallery/style.css';
+            cssUrl = 'http://static2.dmcdn.net/publisher/gallery/style.css?v=1';
 
         function init(parameters)
         {

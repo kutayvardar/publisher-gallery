@@ -62,7 +62,7 @@
     height:40px;
     top:125px;
     color:white;
-    background-image:url('images/bg_title_gallery.png');
+    background-image:url('images/bg_title_gallery.png?v=1');
     z-index:1;
     display:block;
     left:5px;
@@ -76,7 +76,7 @@
 #publisher_gallery_video_list .publisher_gallery_play_button
 {
     position:absolute;
-    background: url('images/csl_play_tn.png') no-repeat;
+    background: url('images/csl_play_tn.png?v=1') no-repeat;
     width: 45px;
     height:40px;
     z-index:9;
