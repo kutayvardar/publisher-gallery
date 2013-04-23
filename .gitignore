@@ -2,3 +2,4 @@ src/
 test*
 *.php
 make*
+*.html
